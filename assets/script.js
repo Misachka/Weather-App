@@ -13,7 +13,7 @@ function initPage() {
     let searchHistory = JSON.parse(localStorage.getItem("search")) || [];
 
     // Assigning a unique API to a variable
-    const APIKey = "49ea06deb07fd5294aec3136519903eb";
+    const APIKey = "c35278d89f1135c6bc2c7d4336bc4bb2";
 
     function getWeather(cityName) {
         // gets current weather information from weather api
@@ -32,6 +32,7 @@ function initPage() {
                 let weatherPic = response.data.weather[0].icon;
                 currentPicEl.setAttribute("src", "https://openweathermap.org/img/wn/" + weatherPic + "@2x.png");
                 currentPicEl.setAttribute("alt", response.data.weather[0].description);
+                currentTempEl.innerHTML = "Temperature: " + k2f(response.data.main.temp) + " &#176F";
                 currentHumidityEl.innerHTML = "Humidity: " + response.data.main.humidity + "%";
                 currentWindEl.innerHTML = "Wind Speed: " + response.data.wind.speed + " MPH";
                 
@@ -62,6 +63,8 @@ function initPage() {
                             forecastWeatherEl.setAttribute("alt", response.data.list[forecastIndex].weather[0].description);
                             forecastEls[i].append(forecastWeatherEl);
                             const forecastTempEl = document.createElement("p");
+                            forecastTempEl.innerHTML = "Temp: " + k2f(response.data.list[forecastIndex].main.temp) + " &#176F";
+                            forecastEls[i].append(forecastTempEl);
                             const forecastHumidityEl = document.createElement("p");
                             forecastHumidityEl.innerHTML = "Humidity: " + response.data.list[forecastIndex].main.humidity + "%";
                             forecastEls[i].append(forecastHumidityEl);
@@ -69,8 +72,9 @@ function initPage() {
                     })
             });
     }
-       // saves history in local storage 
-       searchEl.addEventListener("click", function () {
+
+    // saves history in local storage 
+    searchEl.addEventListener("click", function () {
         const searchTerm = cityEl.value;
         getWeather(searchTerm);
         searchHistory.push(searchTerm);
@@ -84,6 +88,11 @@ function initPage() {
         searchHistory = [];
         renderSearchHistory();
     })
+
+    function k2f(K) {
+     return Math.floor((K - 273.15) * 1.8 + 32);
+    }
+
     function renderSearchHistory() {
         historyEl.innerHTML = "";
         for (let i = 0; i < searchHistory.length; i++) {
@@ -107,3 +116,4 @@ function initPage() {
 }
 
 initPage();
+
